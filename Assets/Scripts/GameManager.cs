@@ -7,6 +7,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class GameManager : MonoBehaviour
 {
     public bool userNameStored = false;
@@ -18,6 +22,7 @@ public class GameManager : MonoBehaviour
     [Header("Data to Save")] 
     [SerializeField] private TMP_InputField _usernameInput;
     [SerializeField] private TMP_Text  _userNameWarningText;
+    [SerializeField] private TMP_Text  _leaderboardText;
 
     
     public static GameManager Instance;
@@ -48,8 +53,8 @@ public class GameManager : MonoBehaviour
         {
             _usernameInput.onEndEdit.AddListener(HandleUserNameInput);
         }
-        
-        
+
+        _leaderboardText.text = $"Best Score : {bestScoreUserName} : {bestScore}";
     }
 
     
@@ -104,25 +109,24 @@ public class GameManager : MonoBehaviour
         
     }
 
+    public void ExitGame()
+    {
+#if UNITY_EDITOR
+        EditorApplication.ExitPlaymode();
+#else
+        Application.Quit();
+#endif
+
+    }
+
+    //Declare savedata class
     [System.Serializable]
     class SessionData
     {
+        //declare savedata date type
         public string newUserName;
         
     }
-
-    [System.Serializable]
-    class BestScoreData
-    {
-        public string bestScoreUserName;
-        public int bestScore;
-    }
-    private void LoadAllSavedData()
-    {
-        LoadUserName();
-        LoadBestScoreDetails();
-    }
-
     public void SaveUserName()
     {
         SessionData userName = new SessionData();
@@ -147,6 +151,16 @@ public class GameManager : MonoBehaviour
             newUserName = userName.newUserName;
         }
     }
+
+    //Declare serializable save data class
+    [System.Serializable]
+    class BestScoreData
+    {
+        //Declare the data type to be saved
+        public string bestScoreUserName;
+        public int bestScore;
+    }
+    
 
 
     public void SaveBestScoreDetails()
@@ -180,6 +194,11 @@ public class GameManager : MonoBehaviour
             bestScoreUserName = bestScoreData.bestScoreUserName;
             bestScore = bestScoreData.bestScore;
         }
+    }
+    private void LoadAllSavedData()
+    {
+        LoadUserName();
+        LoadBestScoreDetails();
     }
 
     private void AssignMainmanger()

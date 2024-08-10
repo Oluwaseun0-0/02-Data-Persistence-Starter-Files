@@ -53,6 +53,7 @@ public class MainManager : MonoBehaviour
         
         if (SceneManager.GetActiveScene().buildIndex == 1)
         {
+            
             const float step = 0.6f;
             int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -92,6 +93,7 @@ public class MainManager : MonoBehaviour
             {
                 //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 SceneManager.LoadScene(1);
+                _gameManager.LoadBestScoreDetails();
             }
         }
     }
